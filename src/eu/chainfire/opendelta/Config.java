@@ -68,7 +68,7 @@ public class Config {
     private final String url_branch_name;
     private final String url_base_json;
     private final String url_api_history;
-    private final String android_version;
+    private final String pixys_version;
 
     private Config(Context context) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -104,10 +104,10 @@ public class Config {
         url_api_history = String.format(
                 res.getString(R.string.url_api_history),
                 url_branch_name, property_device, property_device);
-        android_version = SystemProperties.get(
-                res.getString(R.string.android_version));
+        pixys_version = SystemProperties.get(
+                res.getString(R.string.pixys_version));
         filename_base_prefix = String.format(Locale.ENGLISH,
-                res.getString(R.string.filename_base), android_version);
+                res.getString(R.string.filename_base), pixys_version);
 
         Logger.d("property_version: %s", property_version);
         Logger.d("property_device: %s", property_device);
@@ -244,8 +244,8 @@ public class Config {
         return url_api_history;
     }
 
-    public String getAndroidVersion() {
-        return android_version;
+    public String getPixysVersion() {
+        return pixys_version;
     }
 
     public static boolean isABDevice() {

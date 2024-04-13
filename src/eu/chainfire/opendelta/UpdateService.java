@@ -611,7 +611,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
         mNotificationManager.notify(
                 NOTIFICATION_UPDATE,
                 (new Notification.Builder(this, UPDATE_NOTIFICATION_CHANNEL_ID))
-                .setSmallIcon(R.drawable.stat_notify_update)
+                .setSmallIcon(R.drawable.ic_system_update)
                 .setContentTitle(readyToFlash
                         ? getString(R.string.notify_title_flash)
                         : getString(R.string.notify_title_download))
@@ -624,7 +624,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
 
     private void newFlashNotification(String filename) {
         mFlashNotificationBuilder = new Notification.Builder(this, INSTALL_NOTIFICATION_CHANNEL_ID);
-        mFlashNotificationBuilder.setSmallIcon(R.drawable.stat_notify_update)
+        mFlashNotificationBuilder.setSmallIcon(R.drawable.ic_system_update)
                 .setContentTitle(getString(R.string.state_action_ab_flash))
                 .setShowWhen(true)
                 .setOngoing(true)
@@ -656,7 +656,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
             cPI
         ).build());
         mDownloadNotificationBuilder = new Notification.Builder(this, INSTALL_NOTIFICATION_CHANNEL_ID);
-        mDownloadNotificationBuilder.setSmallIcon(R.drawable.stat_notify_update)
+        mDownloadNotificationBuilder.setSmallIcon(R.drawable.ic_system_update)
                 .setContentTitle(title)
                 .setShowWhen(false)
                 .setOngoing(true)
@@ -676,7 +676,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
 
         Notification.Builder builder =
                 (new Notification.Builder(this, INSTALL_NOTIFICATION_CHANNEL_ID))
-                .setSmallIcon(R.drawable.stat_notify_update)
+                .setSmallIcon(R.drawable.ic_system_update)
                 .setContentTitle(getString(R.string.state_action_ab_finished))
                 .setShowWhen(true)
                 .setContentIntent(getNotificationIntent(false));
@@ -698,7 +698,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
             mNotificationManager.notify(
                     NOTIFICATION_ERROR,
                     (new Notification.Builder(this, UPDATE_NOTIFICATION_CHANNEL_ID))
-                    .setSmallIcon(R.drawable.stat_notify_error)
+                    .setSmallIcon(R.drawable.ic_system_update)
                     .setContentTitle(getString(R.string.notify_title_error))
                     .setContentText(errorStateString)
                     .setShowWhen(true)
@@ -714,7 +714,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                 if (parts.length > 1) {
                     Logger.d("isMatchingImage: check " + fileName);
                     String version = parts[1];
-                    Version current = new Version(mConfig.getAndroidVersion());
+                    Version current = new Version(mConfig.getPixysVersion());
                     Version fileVersion = new Version(version);
                     if (fileVersion.compareTo(current) >= 0) {
                         Logger.d("isMatchingImage: ok " + fileName);
@@ -1426,9 +1426,9 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                 if (latestBuild != null && !forceFlash) {
                     try {
                         final long currFileDate = Long.parseLong(currentVersionZip
-                                .split("-")[4].substring(0, 8));
+                                .split("-")[5].substring(0, 8));
                         final long latestFileDate = Long.parseLong(latestBuild
-                                .split("-")[4].substring(0, 8));
+                                .split("-")[5].substring(0, 8));
                         updateAvailable = latestFileDate > currFileDate;
                     } catch (NumberFormatException exception) {
                         // Just incase someone decides to 
@@ -1674,9 +1674,9 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                     final String filename = otaJson.getJSONArray("response")
                             .getJSONObject(0).getString("filename");
                     final Long fileDate = Long.parseLong(
-                            filename.split("-")[4].substring(0, 8));
+                            filename.split("-")[5].substring(0, 8));
                     final Long currDate = Long.parseLong(
-                            mConfig.getFilenameBase().split("-")[4].substring(0, 8));
+                            mConfig.getFilenameBase().split("-")[5].substring(0, 8));
                     if (fileDate <= currDate) break; // reached an older/same build
 
                     // fetch and add the changelog of that commit sha, titled by the date
