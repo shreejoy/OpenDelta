@@ -244,10 +244,6 @@ public class Config {
         return url_api_history;
     }
 
-    public String getPixysVersion() {
-        return pixys_version;
-    }
-
     public static boolean isABDevice() {
         return SystemProperties.getBoolean(PROP_AB_DEVICE, false);
     }

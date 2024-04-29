@@ -732,28 +732,6 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
         }
     }
 
-    private boolean isMatchingImage(String fileName) {
-        try {
-            Logger.d("Image check for file name: " + fileName);
-            if (fileName.endsWith(".zip") && fileName.contains(mConfig.getDevice())) {
-                String[] parts = fileName.split("-");
-                if (parts.length > 1) {
-                    Logger.d("isMatchingImage: check " + fileName);
-                    String version = parts[1];
-                    Version current = new Version(mConfig.getPixysVersion());
-                    Version fileVersion = new Version(version);
-                    if (fileVersion.compareTo(current) >= 0) {
-                        Logger.d("isMatchingImage: ok " + fileName);
-                        return true;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Logger.ex(e);
-        }
-        return false;
-    }
-
     public ProgressListener getSUMProgress(@StateInt int state, String filename) {
         final long[] last = new long[] { 0, SystemClock.elapsedRealtime() };
         final @StateInt int _state = state;
@@ -1405,7 +1383,6 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                             }
                             Logger.d("parsed from json:");
                             Logger.d("fileName= " + fileName);
-                            if (isMatchingImage(fileName))
                                 latestBuild = fileName;
                             if (urlOverride != null && !urlOverride.equals(""))
                                 Logger.d("url= " + urlOverride);
