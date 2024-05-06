@@ -827,7 +827,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
         return false;
     }
 
-    private void downloadBuild(String url, String sha256Sum, String imageName) {
+    private void downloadBuild(String url, String md5Sum, String imageName) {
         String fn = mConfig.getPathBase() + imageName;
         File f = new File(fn + ".part");
         Logger.d("download: %s --> %s", url, fn);
@@ -844,7 +844,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
             }
         }
 
-        mDownload = new Download(url, f, sha256Sum, this);
+        mDownload = new Download(url, f, md5Sum, this);
         if (mDownload.start() && f.renameTo(new File(fn))) {
             Logger.d("success");
             mPrefs.edit().putString(PREF_READY_FILENAME_NAME, fn).commit();
@@ -884,16 +884,16 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
     }
 
     /**
-     * @param url - url to sha256sum file
+     * @param url - url to md5sum file
      * @param fn - file name
-     * @return true if sha256sum matches the file
+     * @return true if md5sum matches the file
      */
-    private boolean checkBuildSHA256Sum(String url, String fn) {
-        final String latestSUM = getLatestSHA256Sum(url);
+    private boolean checkBuildMD5Sum(String url, String fn) {
+        final String latestSUM = getLatestMD5Sum(url);
         final File file = new File(fn);
         if (latestSUM != null){
             try {
-                String fileSUM = getFileSHA256(file,
+                String fileSUM = getFileMD5(file,
                         getSUMProgress(State.ACTION_CHECKING_SUM, file.getName()));
                 boolean sumCheck = fileSUM.equals(latestSUM);
                 Logger.d("fileSUM=" + fileSUM + " latestSUM=" + latestSUM);
@@ -906,7 +906,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
         return false;
     }
 
-    public static String getFileSHA256(File file, ProgressListener progressListener) {
+    public static String getFileMD5(File file, ProgressListener progressListener) {
         String ret = null;
         int count = 0;
 
@@ -916,7 +916,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
 
         try {
             try (FileInputStream is = new FileInputStream(file)) {
-                MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                MessageDigest digest = MessageDigest.getInstance("MD5");
                 byte[] buffer = new byte[8192];
                 int r;
 
@@ -930,8 +930,8 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                 ret = Download.digestToHexString(digest);
             }
         } catch (IOException | NoSuchAlgorithmException e) {
-            // No SHA256 support (returns null)
-            // The SHA256 of a non-existing file is null
+            // No MD5 support (returns null)
+            // The MD5 of a non-existing file is null
             // Read or close error (returns null)
             Logger.ex(e);
         }
@@ -1227,7 +1227,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
         }
     }
 
-    private String getLatestSHA256Sum(String sumUrl) {
+    private String getLatestMD5Sum(String sumUrl) {
         String urlSuffix = mConfig.getUrlSuffix();
         if (mIsUrlOverride) {
             sumUrl = mSumUrlOvr;
@@ -1239,7 +1239,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
             String sumPart = latestSum;
             while (sumPart.length() > 64)
                 sumPart = sumPart.substring(0, sumPart.length() - 1);
-            Logger.d("getLatestSHA256Sum - sha256sum = " + sumPart);
+            Logger.d("getLatestMD5Sum - md5sum = " + sumPart);
             return sumPart;
         }
         return null;
@@ -1366,8 +1366,8 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                             String fileName = new File(build.getString("filename")).getName();
                             if (build.has("url"))
                                 urlOverride = build.getString("url");
-                            if (build.has("sha256url"))
-                                sumOverride = build.getString("sha256url");
+                            if (build.has("md5url"))
+                                sumOverride = build.getString("md5url");
                             if (build.has("payload")) {
                                 payloadProps = new ArrayList<>();
                                 JSONArray payloadList = build.getJSONArray("payload");
@@ -1387,7 +1387,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                             if (urlOverride != null && !urlOverride.equals(""))
                                 Logger.d("url= " + urlOverride);
                             if (sumOverride != null && !sumOverride.equals("")) {
-                                Logger.d("sha256 url= " + sumOverride);
+                                Logger.d("md5 url= " + sumOverride);
                             }
                             if (payloadProps != null) {
                                 for (String str : payloadProps) {
@@ -1417,7 +1417,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                     latestFetch = mConfig.getUrlBase() +
                             latestBuild + mConfig.getUrlSuffix();
                     latestFetchSUM = mConfig.getUrlBaseSum() +
-                            latestBuild + ".sha256sum" + mConfig.getUrlSuffix();
+                            latestBuild + ".md5sum" + mConfig.getUrlSuffix();
                 } else {
                     latestFetch = urlOverride;
                     latestFetchSUM = sumOverride;
@@ -1481,12 +1481,12 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
 
                 if (checkOnly == PREF_AUTO_DOWNLOAD_FULL) {
                     if (userInitiated || mNetworkState.getState()) {
-                        final String latestSUM = getLatestSHA256Sum(latestFetchSUM);
+                        final String latestSUM = getLatestMD5Sum(latestFetchSUM);
                         if (latestSUM != null) {
                             downloadBuild(latestFetch, latestSUM, latestBuild);
                         } else {
                             mState.update(State.ERROR_DOWNLOAD, Download.ERROR_CODE_NO_SUM_FILE);
-                            Logger.d("aborting download due to sha256sum not found");
+                            Logger.d("aborting download due to md5sum not found");
                         }
                     } else {
                         mState.update(State.ERROR_DOWNLOAD, Download.ERROR_CODE_NO_CONNECTION);
@@ -1523,7 +1523,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
         String fn = mConfig.getPathBase() + latestBuild;
         File file = new File(fn);
         if (file.exists()) {
-            if (checkBuildSHA256Sum(latestFetchSUM, fn)) {
+            if (checkBuildMD5Sum(latestFetchSUM, fn)) {
                 Logger.d("match found: " + fn);
                 // zip exists and is valid - flash ready state
                 mPrefs.edit().putString(PREF_READY_FILENAME_NAME, fn).commit();
@@ -1611,7 +1611,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
         mPrefs.edit().putString(PREF_READY_FILENAME_NAME, flashFilename).commit();
         File fn = new File(flashFilename);
         if (!forceFlash) {
-            File shaFile = new File(flashFilename + ".sha256sum");
+            File shaFile = new File(flashFilename + ".md5sum");
             if (!shaFile.exists()) {
                 mState.update(State.ACTION_FLASH_FILE_NO_SUM, fn.getName());
                 return;
@@ -1629,7 +1629,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
             }
             final ProgressListener listener = getSUMProgress(
                     State.ACTION_CHECKING_SUM, flashFilename);
-            final String fileSha = getFileSHA256(fn, listener);
+            final String fileSha = getFileMD5(fn, listener);
             if (fileSha == null || sha == null || !fileSha.equals(sha)) {
                 mState.update(State.ACTION_FLASH_FILE_INVALID_SUM, fn.getName());
                 return;

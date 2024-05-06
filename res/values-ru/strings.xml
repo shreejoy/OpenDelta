@@ -121,7 +121,7 @@
     <string name="button_select_file">Файл</string>
     <string name="state_error_ab_flash">Не удается установить A/B обновление</string>
     <string name="state_error_flash_file">Не удается установить обновление</string>
-    <string name="no_sum_dialog_msg">Не найден файл контрольной суммы (.sha256sum).\nПоместите файл контрольной суммы вместе с файлом прошивки\nНажимте "игнорировать" чтобы продолжить без проверки (опасно!)</string>
+    <string name="no_sum_dialog_msg">Не найден файл контрольной суммы (.md5sum).\nПоместите файл контрольной суммы вместе с файлом прошивки\nНажимте "игнорировать" чтобы продолжить без проверки (опасно!)</string>
     <string name="invalid_sum_dialog_msg">Контрольная сумма не совпадает.\nСкорее всего файл обновления поврежден, перекачайте заново.\nНажмите "игнорировать" чтобы продолжить.\nИмейте ввиду что это вам аукнется</string>
     <string name="install_channel_name">Процесс обновления</string>
     <string name="text_update_file_flash_title">Файл обновления:</string>

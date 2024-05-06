@@ -22,7 +22,7 @@
 	<!-- URL base to find the full zip files, %s is replaced to be property_device value. -->
 	<string name="url_base_full">https://dl.aswinaskurup.xyz/PixysOS/%s/</string>
 
-	<!-- URL base to find the full zip sha256sum files, %s is replaced to be property_device value. -->
+	<!-- URL base to find the full zip md5sum files, %s is replaced to be property_device value. -->
 	<string name="url_base_full_sum">https://dl.aswinaskurup.xyz/PixysOS/%s/</string>
 
 	<!-- URL base suffix - Used only for download -->
