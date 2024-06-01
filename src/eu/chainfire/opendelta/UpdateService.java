@@ -1647,8 +1647,8 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
         final String jsURL = mConfig.getUrlBaseJson();
         StringBuilder changelog = new StringBuilder(
                 Download.asString(jsURL.replace(
-                mConfig.getDevice() + ".json",
-                "Changelog.txt")));
+                "full_update_" + mConfig.getZipType().toLowerCase() + ".json",
+                "changelog.txt")));
         return changelog.toString();
     }
 }

@@ -36,6 +36,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -276,6 +277,30 @@ public class MainActivity extends Activity {
 
     // show Change log dialog
     // Show Rom Specific Changelog and Device Specific Changelog
+    private void showChangelog() {
+        String changelogUrl = mConfig.getUrlBaseJson()
+                .replace("full_update_" + mConfig.getZipType().toLowerCase() + ".json", "changelog.txt");
+    
+        new AsyncTask<String, Void, String>() {
+            @Override
+            protected String doInBackground(String... params) {
+                return Download.asString(params[0]);
+            }
+    
+            @Override
+            protected void onPostExecute(String result) {
+                if (result != null) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle(R.string.changelog_title)
+                            .setMessage(result)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show();
+                } else {
+                    Toast.makeText(MainActivity.this, R.string.changelog_error, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute(changelogUrl);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -291,13 +316,7 @@ public class MainActivity extends Activity {
             return true;
         }
         if (id == R.id.changelog) {
-            Logger.d("Changelog clicked");
-            // Log url_base_json is full_update.json
-            Logger.d("URL: %s", mConfig.getUrlBaseJson());
-            Intent changelogActivity = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(mConfig.getUrlBaseJson().replace(
-                        "full_update_" + mConfig.getZipType().toLowerCase() + ".json", "Changelog.txt")));
-            startActivity(changelogActivity);
+            showChangelog();
             return true;
         }
         if (id == R.id.info) {
