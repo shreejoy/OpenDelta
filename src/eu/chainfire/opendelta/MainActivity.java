@@ -153,6 +153,7 @@ public class MainActivity extends Activity {
     private Button mPauseBtn;
     private Button mRebootBtn;
     private TextView mCurrentVersion;
+    private TextView mZiptype;
     private TextView mLastChecked;
     private TextView mDownloadSizeHeader;
     private TextView mDownloadSize;
@@ -201,6 +202,7 @@ public class MainActivity extends Activity {
         mStopBtn = findViewById(R.id.button_stop);
         mPauseBtn = findViewById(R.id.button_pause);
         mCurrentVersion = findViewById(R.id.text_current_version);
+        mZiptype = findViewById(R.id.text_ziptype);
         mLastChecked = findViewById(R.id.text_last_checked);
         mDownloadSize = findViewById(R.id.text_download_size);
         mDownloadSizeHeader = findViewById(R.id.text_download_size_header);
@@ -272,6 +274,9 @@ public class MainActivity extends Activity {
             textView.setTypeface(mTitle.getTypeface());
     }
 
+    // show Change log dialog
+    // Show Rom Specific Changelog and Device Specific Changelog
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Do not use res IDs in a switch case
@@ -286,9 +291,12 @@ public class MainActivity extends Activity {
             return true;
         }
         if (id == R.id.changelog) {
+            Logger.d("Changelog clicked");
+            // Log url_base_json is full_update.json
+            Logger.d("URL: %s", mConfig.getUrlBaseJson());
             Intent changelogActivity = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(mConfig.getUrlBaseJson().replace(
-                            mConfig.getDevice() + ".json", "Changelog.txt")));
+                        "full_update_" + mConfig.getZipType().toLowerCase() + ".json", "Changelog.txt")));
             startActivity(changelogActivity);
             return true;
         }
@@ -458,6 +466,7 @@ public class MainActivity extends Activity {
                 final boolean setVersionTitle = !hideVersion && !TextUtils.isEmpty(updateVersionTitle);
                 if (setVersionTitle) mUpdateVersionTitle.setText(updateVersionTitle);
                 mCurrentVersion.setText(mConfig.getFilenameBase());
+                mZiptype.setText(mConfig.getZipType());
                 mLastChecked.setText(lastCheckedText);
                 mExtraText.setText(extraText);
                 final boolean hideSize = TextUtils.isEmpty(downloadSizeText);

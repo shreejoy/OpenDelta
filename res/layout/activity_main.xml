@@ -139,6 +139,20 @@
     <Space
         android:layout_width="match_parent"
         android:layout_height="10dp" />
+    
+    <!-- For ziptype -->
+    <TextView
+        android:id="@+id/text_ziptype_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_ziptype_header_title"
+        android:textAppearance="@style/HeaderText" />
+
+    <TextView
+        android:id="@+id/text_ziptype"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/ValueText" />
 
     <TextView
         android:id="@+id/text_update_version_header"

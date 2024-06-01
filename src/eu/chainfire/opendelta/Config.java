@@ -58,17 +58,13 @@ public class Config {
     private final String filename_base;
     private final String path_base;
     private final String path_flash_after_update;
-    private final String url_base_update;
-    private final String url_base;
-    private final String url_base_sum;
-    private final String url_base_suffix;
     private final boolean support_ab_perf_mode;
     private final boolean use_twrp;
     private final String filename_base_prefix;
     private final String url_branch_name;
     private final String url_base_json;
-    private final String url_api_history;
     private final String pixys_version;
+    private final String property_ziptype;
 
     private Config(Context context) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -88,26 +84,17 @@ public class Config {
                 File.separator);
         path_flash_after_update = String.format(Locale.ENGLISH, "%s%s%s",
                 path_base, "FlashAfterUpdate", File.separator);
-        url_base_update = String.format(Locale.ENGLISH,
-                res.getString(R.string.url_base_update), property_device);
-        url_base = String.format(
-                res.getString(R.string.url_base_full), property_device);
-        url_base_sum = String.format(
-                res.getString(R.string.url_base_full_sum), property_device);
-        url_base_suffix = res.getString(R.string.url_base_suffix);
         support_ab_perf_mode = res.getBoolean(R.bool.support_ab_perf_mode);
         use_twrp = res.getBoolean(R.bool.use_twrp);
         url_branch_name = res.getString(R.string.url_branch_name);
-        url_base_json = String.format(
-                res.getString(R.string.url_base_json),
-                url_branch_name, property_device, property_device);
-        url_api_history = String.format(
-                res.getString(R.string.url_api_history),
-                url_branch_name, property_device, property_device);
         pixys_version = SystemProperties.get(
                 res.getString(R.string.pixys_version));
         filename_base_prefix = String.format(Locale.ENGLISH,
                 res.getString(R.string.filename_base), pixys_version);
+        property_ziptype = SystemProperties.get(res.getString(R.string.property_ziptype));
+        url_base_json = String.format(
+            res.getString(R.string.url_base_json),
+            url_branch_name, property_device, property_ziptype.toLowerCase(Locale.ENGLISH));
 
         Logger.d("property_version: %s", property_version);
         Logger.d("property_device: %s", property_device);
@@ -115,13 +102,10 @@ public class Config {
         Logger.d("filename_base_prefix: %s", filename_base_prefix);
         Logger.d("path_base: %s", path_base);
         Logger.d("path_flash_after_update: %s", path_flash_after_update);
-        Logger.d("url_base_update: %s", url_base_update);
-        Logger.d("url_base: %s", url_base);
-        Logger.d("url_base_sum: %s", url_base_sum);
         Logger.d("url_branch_name: %s", url_branch_name);
         Logger.d("url_base_json: %s", url_base_json);
-        Logger.d("url_api_history: %s", url_api_history);
         Logger.d("use_twrp: %d", use_twrp ? 1 : 0);
+        Logger.d("property_ziptype: %s", property_ziptype);
     }
 
     public String getFilenameBase() {
@@ -134,22 +118,6 @@ public class Config {
 
     public String getPathFlashAfterUpdate() {
         return path_flash_after_update;
-    }
-
-    public String getUrlBaseUpdate() {
-        return url_base_update;
-    }
-
-    public String getUrlBase() {
-        return url_base;
-    }
-
-    public String getUrlBaseSum() {
-        return url_base_sum;
-    }
-
-    public String getUrlSuffix() {
-        return url_base_suffix;
     }
 
     public boolean getUseTWRP() {
@@ -240,11 +208,11 @@ public class Config {
         return url_base_json;
     }
 
-    public String getUrlAPIHistory() {
-        return url_api_history;
-    }
-
     public static boolean isABDevice() {
         return SystemProperties.getBoolean(PROP_AB_DEVICE, false);
+    }
+
+    public String getZipType() {
+        return property_ziptype;
     }
 }

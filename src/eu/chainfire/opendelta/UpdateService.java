@@ -50,6 +50,7 @@ import android.os.UpdateEngine;
 import android.preference.PreferenceManager;
 
 import eu.chainfire.opendelta.State.StateInt;
+import eu.chainfire.opendelta.UpdateService.CheckForUpdateListener;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -815,7 +816,8 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
 
         if (userInitiated || updateAllowed) {
             Logger.i("Starting check for updates");
-            checkForUpdatesAsync(userInitiated, checkOnly, forceFlash);
+            String ziptype = mConfig.getZipType();
+            checkForUpdatesAsync(userInitiated, checkOnly, forceFlash, ziptype);
             return true;
         } else {
             Logger.i("Ignoring request to check for updates");
@@ -1220,12 +1222,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
     }
 
     private String getLatestMD5Sum(String sumUrl) {
-        String urlSuffix = mConfig.getUrlSuffix();
-        if (mIsUrlOverride) {
-            sumUrl = mSumUrlOvr;
-        } else if (urlSuffix.length() > 0) {
-            sumUrl += mConfig.getUrlSuffix();
-        }
+        sumUrl = mSumUrlOvr;
         String latestSum = Download.asString(sumUrl);
         if (latestSum != null) {
             String sumPart = latestSum;
@@ -1308,7 +1305,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
     }
 
     private void checkForUpdatesAsync(final boolean userInitiated, final int checkOnly,
-            final boolean forceFlash) {
+            final boolean forceFlash, final String ziptype) {
         Logger.d("checkForUpdatesAsync");
 
         mState.update(State.ACTION_CHECKING);
@@ -1354,9 +1351,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                         try {
                             JSONObject build = updatesList.getJSONObject(i);
                             String fileName = new File(build.getString("filename")).getName();
-                            if (build.has("url"))
                                 urlOverride = build.getString("url");
-                            if (build.has("md5url"))
                                 sumOverride = build.getString("md5url");
                             if (build.has("payload")) {
                                 payloadProps = new ArrayList<>();
@@ -1401,17 +1396,8 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                     return;
                 }
 
-                String latestFetch;
-                String latestFetchSUM;
-                if (urlOverride == null || sumOverride == null) {
-                    latestFetch = mConfig.getUrlBase() +
-                            latestBuild + mConfig.getUrlSuffix();
-                    latestFetchSUM = mConfig.getUrlBaseSum() +
-                            latestBuild + ".md5sum" + mConfig.getUrlSuffix();
-                } else {
-                    latestFetch = urlOverride;
-                    latestFetchSUM = sumOverride;
-                }
+                String latestFetch = urlOverride;
+                String latestFetchSUM = sumOverride;
                 Logger.d("latest build for device " + mConfig.getDevice() + " is " + latestFetch);
 
                 String currentVersionZip = mConfig.getFilenameBase() + ".zip";
@@ -1663,35 +1649,6 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                 Download.asString(jsURL.replace(
                 mConfig.getDevice() + ".json",
                 "Changelog.txt")));
-        // currently changelog only contains the latest info
-        // let us check if we have any builds the user skipped and add em
-        try {
-            final JSONArray jArr = new JSONArray(Download.asString(mConfig.getUrlAPIHistory()));
-            for (int i = 1; i < jArr.length() && i < 10; i++) {
-                try {
-                    final String otaJsonURL = jsURL.replace(
-                            mConfig.getUrlBranchName(),
-                            jArr.getJSONObject(i).getString("sha"));
-                    final JSONObject otaJson = new JSONObject(Download.asString(otaJsonURL));
-                    final String filename = otaJson.getJSONArray("response")
-                            .getJSONObject(0).getString("filename");
-                    final Long fileDate = Long.parseLong(
-                            filename.split("-")[5].substring(0, 8));
-                    final Long currDate = Long.parseLong(
-                            mConfig.getFilenameBase().split("-")[5].substring(0, 8));
-                    if (fileDate <= currDate) break; // reached an older/same build
-
-                    // fetch and add the changelog of that commit sha, titled by the date
-                    final String currChangelog = Download.asString(
-                            otaJsonURL.replace(mConfig.getDevice() + ".json", "Changelog.txt"));
-                    changelog.append("\n" + fileDate + ":\n\n" + currChangelog);
-                } catch (JSONException e) {
-                    Logger.ex(e);
-                }
-            }
-        } catch (Exception e) {
-            Logger.ex(e);
-        }
         return changelog.toString();
     }
 }
