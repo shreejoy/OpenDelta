@@ -1,314 +1,325 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="15dp"
-    android:layout_marginEnd="15dp"
-    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <Toolbar
-        android:id="@+id/action_bar"
-        style="?android:attr/actionBarStyle"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="?android:attr/actionBarTheme" 
-        android:label="@string/updater_title" />
+        android:layout_height="match_parent"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:orientation="vertical">
+
+        <Toolbar
+            android:id="@+id/action_bar"
+            style="?android:attr/actionBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="?android:attr/actionBarTheme" 
+            android:label="@string/updater_title" />
+
+
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="match_parent"
+            android:layout_height="30sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:gravity="center_horizontal"
+            android:textAppearance="@style/TitleText" />
+
+        <TextView
+            android:id="@+id/extra_text"
+            android:layout_width="match_parent"
+            android:layout_height="40sp"
+            android:layout_marginTop="2dp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="9sp"
+            android:autoSizeMaxTextSize="14sp"
+            android:ellipsize="marquee"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:textAppearance="@style/ValueText" />
+
+        <TextView
+            android:id="@+id/progress_text"
+            android:layout_width="match_parent"
+            android:layout_height="20sp"
+            android:ellipsize="start"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:singleLine="true"
+            android:textAppearance="@style/OtherText" />
+
+        <LinearLayout
+            android:id="@+id/progress_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:progressTint="?android:attr/colorAccent"
+                android:indeterminateTint="?android:attr/colorAccent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:max="1"
+                android:progress="0" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/progress_percent"
+                android:layout_width="wrap_content"
+                android:layout_height="20sp"
+                android:gravity="start"
+                android:singleLine="true"
+                android:textAppearance="@style/OtherText" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="20sp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/progress_text2"
+                android:layout_width="wrap_content"
+                android:layout_height="20sp"
+                android:ellipsize="marquee"
+                android:gravity="end"
+                android:singleLine="true"
+                android:textAppearance="@style/OtherText" />
+
+        </LinearLayout>
+
+        <!-- Everything ABOVE this space should have a constant sp height
+            and never be set to GONE (only INVISIBLE) -->
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <TextView
+            android:id="@+id/text_last_checked_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_last_checked_header_title"
+            android:textAppearance="@style/HeaderText" />
+
+        <TextView
+            android:id="@+id/text_last_checked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/ValueText" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <TextView
+            android:id="@+id/text_current_version_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_current_version_header_title"
+            android:textAppearance="@style/HeaderText" />
+
+        <TextView
+            android:id="@+id/text_current_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/ValueText" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+        
+        <!-- For ziptype -->
+        <TextView
+            android:id="@+id/text_ziptype_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_ziptype_header_title"
+            android:textAppearance="@style/HeaderText" />
+
+        <TextView
+            android:id="@+id/text_ziptype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/ValueText" />
+
+        <TextView
+            android:id="@+id/text_update_version_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_update_version_title"
+            android:textAppearance="@style/HeaderText" />
+
+        <TextView
+            android:id="@+id/text_update_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/ValueText" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <TextView
+            android:id="@+id/text_download_size_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_download_size_header_title"
+            android:textAppearance="@style/HeaderText" />
+
+        <TextView
+            android:id="@+id/text_download_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/ValueText" />
+
+        <Space
+            android:id="@+id/download_size_spacer"
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <TextView
+            android:id="@+id/text_changelog_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_changelog_header_title"
+            android:textAppearance="@style/HeaderText" />
+
+        <TextView
+            android:id="@+id/text_changelog"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="vertical"
+            android:visibility="gone"
+            android:textAppearance="@style/ValueText" />
+
+        <Space
+            android:id="@+id/changelog_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="16dp" >
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <!-- Download buttons -->
+            <Button
+                android:id="@+id/button_stop"
+                style="@style/ActionPrimaryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onButtonStopClick"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:visibility="gone"
+                android:text="@string/button_stop_text"/>
+
+            <Button
+                android:id="@+id/button_pause"
+                style="@style/ActionPrimaryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onButtonPauseClick"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:visibility="gone"
+                android:text="@string/button_pause_text" />
+
+            <!-- Operation buttons -->
+            <Button
+                android:id="@+id/button_select_file"
+                style="@style/ActionPrimaryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onButtonSelectFileClick"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:text="@string/button_select_file"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/button_flash_now"
+                style="@style/ActionPrimaryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onButtonFlashNowClick"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:visibility="invisible"
+                android:text="@string/button_flash_now"/>
+
+            <Button
+                android:id="@+id/button_build_delta"
+                style="@style/ActionPrimaryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onButtonBuildNowClick"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:visibility="invisible"
+                android:text="@string/button_build_delta"/>
+
+            <Button
+                android:id="@+id/button_check_now"
+                style="@style/ActionPrimaryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onButtonCheckNowClick"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:visibility="invisible"
+                android:text="@string/button_check_short"/>
+
+            <Button
+                android:id="@+id/button_reboot_now"
+                style="@style/ActionPrimaryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onButtonRebootNowClick"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:visibility="invisible"
+                android:text="@string/button_reboot_short"/>
+        </LinearLayout>
+    </LinearLayout>
 
     <include
         android:id="@+id/test_mode_ribbon_container"
         layout="@layout/test_mode_ribbon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:translationZ="10dp"
         android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/text_title"
-        android:layout_width="match_parent"
-        android:layout_height="30sp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:gravity="center_horizontal"
-        android:textAppearance="@style/TitleText" />
-
-    <TextView
-        android:id="@+id/extra_text"
-        android:layout_width="match_parent"
-        android:layout_height="40sp"
-        android:layout_marginTop="2dp"
-        android:autoSizeTextType="uniform"
-        android:autoSizeMinTextSize="9sp"
-        android:autoSizeMaxTextSize="14sp"
-        android:ellipsize="marquee"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:textAppearance="@style/ValueText" />
-
-    <TextView
-        android:id="@+id/progress_text"
-        android:layout_width="match_parent"
-        android:layout_height="20sp"
-        android:ellipsize="start"
-        android:marqueeRepeatLimit="marquee_forever"
-        android:scrollHorizontally="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:singleLine="true"
-        android:textAppearance="@style/OtherText" />
-
-    <LinearLayout
-        android:id="@+id/progress_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:progressTint="?android:attr/colorAccent"
-            android:indeterminateTint="?android:attr/colorAccent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:max="1"
-            android:progress="0" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/progress_percent"
-            android:layout_width="wrap_content"
-            android:layout_height="20sp"
-            android:gravity="start"
-            android:singleLine="true"
-            android:textAppearance="@style/OtherText" />
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="20sp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/progress_text2"
-            android:layout_width="wrap_content"
-            android:layout_height="20sp"
-            android:ellipsize="marquee"
-            android:gravity="end"
-            android:singleLine="true"
-            android:textAppearance="@style/OtherText" />
-
-    </LinearLayout>
-
-    <!-- Everything ABOVE this space should have a constant sp height
-         and never be set to GONE (only INVISIBLE) -->
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
-
-    <TextView
-        android:id="@+id/text_last_checked_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_last_checked_header_title"
-        android:textAppearance="@style/HeaderText" />
-
-    <TextView
-        android:id="@+id/text_last_checked"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/ValueText" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
-
-    <TextView
-        android:id="@+id/text_current_version_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_current_version_header_title"
-        android:textAppearance="@style/HeaderText" />
-
-    <TextView
-        android:id="@+id/text_current_version"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/ValueText" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
-    
-    <!-- For ziptype -->
-    <TextView
-        android:id="@+id/text_ziptype_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_ziptype_header_title"
-        android:textAppearance="@style/HeaderText" />
-
-    <TextView
-        android:id="@+id/text_ziptype"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/ValueText" />
-
-    <TextView
-        android:id="@+id/text_update_version_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_update_version_title"
-        android:textAppearance="@style/HeaderText" />
-
-    <TextView
-        android:id="@+id/text_update_version"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/ValueText" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
-
-    <TextView
-        android:id="@+id/text_download_size_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_download_size_header_title"
-        android:textAppearance="@style/HeaderText" />
-
-    <TextView
-        android:id="@+id/text_download_size"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/ValueText" />
-
-    <Space
-        android:id="@+id/download_size_spacer"
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
-
-    <TextView
-        android:id="@+id/text_changelog_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_changelog_header_title"
-        android:textAppearance="@style/HeaderText" />
-
-    <TextView
-        android:id="@+id/text_changelog"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scrollbars="vertical"
-        android:visibility="gone"
-        android:textAppearance="@style/ValueText" />
-
-    <Space
-        android:id="@+id/changelog_placeholder"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="16dp" >
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <!-- Download buttons -->
-        <Button
-            android:id="@+id/button_stop"
-            style="@style/ActionPrimaryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onButtonStopClick"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:visibility="gone"
-            android:text="@string/button_stop_text"/>
-
-        <Button
-            android:id="@+id/button_pause"
-            style="@style/ActionPrimaryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onButtonPauseClick"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:visibility="gone"
-            android:text="@string/button_pause_text" />
-
-        <!-- Operation buttons -->
-        <Button
-            android:id="@+id/button_select_file"
-            style="@style/ActionPrimaryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onButtonSelectFileClick"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:text="@string/button_select_file"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/button_flash_now"
-            style="@style/ActionPrimaryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onButtonFlashNowClick"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:visibility="invisible"
-            android:text="@string/button_flash_now"/>
-
-        <Button
-            android:id="@+id/button_build_delta"
-            style="@style/ActionPrimaryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onButtonBuildNowClick"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:visibility="invisible"
-            android:text="@string/button_build_delta"/>
-
-        <Button
-            android:id="@+id/button_check_now"
-            style="@style/ActionPrimaryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onButtonCheckNowClick"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:visibility="invisible"
-            android:text="@string/button_check_short"/>
-
-        <Button
-            android:id="@+id/button_reboot_now"
-            style="@style/ActionPrimaryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onButtonRebootNowClick"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:visibility="invisible"
-            android:text="@string/button_reboot_short"/>
-    </LinearLayout>
-</LinearLayout>
+</FrameLayout>
