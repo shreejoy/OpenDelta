@@ -885,8 +885,8 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
      * @param fn - file name
      * @return true if md5sum matches the file
      */
-    private boolean checkBuildMD5Sum(String url, String fn) {
-        final String latestSUM = getLatestMD5Sum(url);
+    private boolean checkBuildMD5Sum(String md5, String fn) {
+        final String latestSUM = md5;
         final File file = new File(fn);
         if (latestSUM != null){
             try {
@@ -895,7 +895,6 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                 boolean sumCheck = fileSUM.equals(latestSUM);
                 Logger.d("fileSUM=" + fileSUM + " latestSUM=" + latestSUM + " check=" + String.valueOf(sumCheck));
                 if (sumCheck) return true;
-                Logger.i("fileSUM check failed for " + url);
             } catch(Exception e) {
                 // WTH knows what can comes from the server
             }
@@ -1220,18 +1219,6 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
         }
     }
 
-    private String getLatestMD5Sum(String sumUrl) {
-        String latestSum = Download.asString(sumUrl);
-        if (latestSum != null) {
-            String sumPart = latestSum;
-            while (sumPart.length() > 64)
-                sumPart = sumPart.substring(0, sumPart.length() - 1);
-            Logger.d("getLatestMD5Sum - md5sum = " + sumPart);
-            return sumPart;
-        }
-        return null;
-    }
-
     private static float getProgress(long current, long total) {
         if (total == 0)
             return 0f;
@@ -1352,7 +1339,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                             JSONObject build = updatesList.getJSONObject(i);
                             String fileName = new File(build.getString("filename")).getName();
                             urlOverride = build.getString("url");
-                            sumOverride = build.getString("md5url");
+                            sumOverride = build.getString("md5");
                             if (build.has("payload")) {
                                 payloadProps = new ArrayList<>();
                                 JSONArray payloadList = build.getJSONArray("payload");
@@ -1372,7 +1359,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                             if (urlOverride != null && !urlOverride.equals(""))
                                 Logger.d("url= " + urlOverride);
                             if (sumOverride != null && !sumOverride.equals("")) {
-                                Logger.d("md5 url= " + sumOverride);
+                                Logger.d("md5 = " + sumOverride);
                             }
                             if (payloadProps != null) {
                                 for (String str : payloadProps) {
@@ -1457,7 +1444,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
 
                 if (checkOnly == PREF_AUTO_DOWNLOAD_FULL) {
                     if (userInitiated || mNetworkState.getState()) {
-                        final String latestSUM = getLatestMD5Sum(latestFetchSUM);
+                        final String latestSUM = latestFetchSUM;
                         if (latestSUM != null) {
                             downloadBuild(latestFetch, latestSUM, latestBuild);
                         } else {

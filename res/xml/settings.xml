@@ -33,7 +33,7 @@
 			android:title="@string/ab_wake_lock_title"
 			android:summary="@string/ab_wake_lock_summary" />
 		<SwitchPreferenceCompat
-			android:defaultValue="true"
+			android:defaultValue="false"
 			android:key="ab_stream_flashing"
 			android:persistent="false"
 			android:title="@string/ab_stream_flashing_title"

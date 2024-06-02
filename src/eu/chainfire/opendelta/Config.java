@@ -166,7 +166,7 @@ public class Config {
     }
 
     public boolean getABStreamCurrent() {
-        return prefs.getBoolean(PREF_AB_STREAM_NAME, true);
+        return prefs.getBoolean(PREF_AB_STREAM_NAME, false);
     }
 
     public void setABStreamCurrent(boolean enable) {
