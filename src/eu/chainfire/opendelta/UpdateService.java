@@ -1395,7 +1395,18 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                                 .split("-")[5]);
                         final long latestFileDate = Long.parseLong(latestBuild
                                 .split("-")[5]);
-                        updateAvailable = latestFileDate >= currFileDate;
+                        
+                        final long curFileTime = Long.parseLong(currentVersionZip
+                                .split("-")[6]);
+                        final long latestFileTime = Long.parseLong(latestBuild
+                                .split("-")[6]);
+
+                        updateAvailable = latestFileDate > currFileDate;
+                        // If dates are the same, check the time
+                        if (latestFileDate == currFileDate) {
+                            updateAvailable = latestFileTime > curFileTime;
+                        }
+
                     } catch (NumberFormatException exception) {
                         // Just incase someone decides to 
                         // make up his own zip / build name and F's this up
