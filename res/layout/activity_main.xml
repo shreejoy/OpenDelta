@@ -13,7 +13,13 @@
         style="?android:attr/actionBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="?android:attr/actionBarTheme" />
+        android:theme="?android:attr/actionBarTheme" 
+        android:label="@string/updater_title" />
+
+    <include
+        android:id="@+id/test_mode_ribbon_container"
+        layout="@layout/test_mode_ribbon"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/text_title"

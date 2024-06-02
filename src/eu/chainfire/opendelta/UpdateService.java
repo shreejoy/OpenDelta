@@ -190,7 +190,6 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
 
     // url override
     private boolean mIsUrlOverride;
-    private String mSumUrlOvr;
 
     private long[] mLastProgressTime;
     private final ProgressListener mProgressListener = new ProgressListener() {
@@ -894,7 +893,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                 String fileSUM = getFileMD5(file,
                         getSUMProgress(State.ACTION_CHECKING_SUM, file.getName()));
                 boolean sumCheck = fileSUM.equals(latestSUM);
-                Logger.d("fileSUM=" + fileSUM + " latestSUM=" + latestSUM);
+                Logger.d("fileSUM=" + fileSUM + " latestSUM=" + latestSUM + " check=" + String.valueOf(sumCheck));
                 if (sumCheck) return true;
                 Logger.i("fileSUM check failed for " + url);
             } catch(Exception e) {
@@ -1222,7 +1221,6 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
     }
 
     private String getLatestMD5Sum(String sumUrl) {
-        sumUrl = mSumUrlOvr;
         String latestSum = Download.asString(sumUrl);
         if (latestSum != null) {
             String sumPart = latestSum;
@@ -1329,7 +1327,9 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
 
                 Logger.d("Checking for latest build");
 
-                String url = mConfig.getUrlBaseJson();
+                String url = mConfig.isTestModeEnabled()
+                        ? mConfig.getTestUrlBaseJson()
+                        : mConfig.getUrlBaseJson();
                 String latestBuild = null;
                 String urlOverride = null;
                 String sumOverride = null;
@@ -1351,8 +1351,8 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                         try {
                             JSONObject build = updatesList.getJSONObject(i);
                             String fileName = new File(build.getString("filename")).getName();
-                                urlOverride = build.getString("url");
-                                sumOverride = build.getString("md5url");
+                            urlOverride = build.getString("url");
+                            sumOverride = build.getString("md5url");
                             if (build.has("payload")) {
                                 payloadProps = new ArrayList<>();
                                 JSONArray payloadList = build.getJSONArray("payload");
@@ -1405,10 +1405,10 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                 if (latestBuild != null && !forceFlash) {
                     try {
                         final long currFileDate = Long.parseLong(currentVersionZip
-                                .split("-")[5].substring(0, 8));
+                                .split("-")[5]);
                         final long latestFileDate = Long.parseLong(latestBuild
-                                .split("-")[5].substring(0, 8));
-                        updateAvailable = latestFileDate > currFileDate;
+                                .split("-")[5]);
+                        updateAvailable = latestFileDate >= currFileDate;
                     } catch (NumberFormatException exception) {
                         // Just incase someone decides to 
                         // make up his own zip / build name and F's this up
@@ -1644,7 +1644,9 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
     }
 
     private String getChangelogString() {
-        final String jsURL = mConfig.getUrlBaseJson();
+        final String jsURL = mConfig.isTestModeEnabled()
+                ? mConfig.getTestUrlBaseJson()
+                : mConfig.getUrlBaseJson();
         StringBuilder changelog = new StringBuilder(
                 Download.asString(jsURL.replace(
                 "full_update_" + mConfig.getZipType().toLowerCase() + ".json",

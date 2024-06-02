@@ -185,7 +185,7 @@ public class MainActivity extends Activity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setTitle(R.string.updater_title);
         }
 
         mHandler = new Handler(getMainLooper());
@@ -278,9 +278,9 @@ public class MainActivity extends Activity {
     // show Change log dialog
     // Show Rom Specific Changelog and Device Specific Changelog
     private void showChangelog() {
-        String changelogUrl = mConfig.getUrlBaseJson()
+        String changelogUrl = (mConfig.isTestModeEnabled() ? mConfig.getTestUrlBaseJson() : mConfig.getUrlBaseJson())
                 .replace("full_update_" + mConfig.getZipType().toLowerCase() + ".json", "changelog.txt");
-    
+
         new AsyncTask<String, Void, String>() {
             @Override
             protected String doInBackground(String... params) {
@@ -623,6 +623,12 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         handleProgressBar();
+        updateTestModeTab();
+    }
+
+    private void updateTestModeTab() {
+        boolean testModeEnabled = mConfig.isTestModeEnabled();
+        findViewById(R.id.test_mode_ribbon_container).setVisibility(testModeEnabled ? View.VISIBLE : View.GONE);
     }
 
     public void onButtonCheckNowClick(View v) {

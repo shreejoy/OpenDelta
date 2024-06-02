@@ -111,5 +111,16 @@
 			android:persistent="false"
 			android:summary="@string/clear_files_summary"
 			android:title="@string/clear_files_title" />
-		</PreferenceCategory>
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:key="category_test_mode"
+		android:title="@string/category_test_mode">
+		<SwitchPreferenceCompat
+			android:defaultValue="false"
+			android:key="test_mode_enabled"
+			android:persistent="false"
+			android:title="@string/test_mode_title"
+			android:summary="@string/test_mode_summary" />
+	</PreferenceCategory>
 </PreferenceScreen>

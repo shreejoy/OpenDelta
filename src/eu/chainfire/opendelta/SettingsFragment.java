@@ -48,8 +48,10 @@ public class SettingsFragment extends PreferenceFragment implements
     private static final String KEY_AB_PERF_MODE = "ab_perf_mode";
     private static final String KEY_AB_WAKE_LOCK = "ab_wake_lock";
     private static final String KEY_AB_STREAM = "ab_stream_flashing";
+    private static final String KEY_TEST_MODE_ENABLED = "test_mode_enabled";
     private static final String KEY_CATEGORY_DOWNLOAD = "category_download";
     private static final String KEY_CATEGORY_FLASHING = "category_flashing";
+    private static final String KEY_CATEGORY_TEST_MODE = "category_test_mode";
     private static final String PREF_FORCE_REFLASH = "force_reflash";
     private static final String PREF_CLEAN_FILES = "clear_files";
 
@@ -68,6 +70,8 @@ public class SettingsFragment extends PreferenceFragment implements
     private Preference mForceReflash;
     private Preference mCleanFiles;
     private ListPreference mScheduleWeekDay;
+    private PreferenceCategory mTestModeCategory;
+    private SwitchPreferenceCompat mTestModeEnabled;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -132,6 +136,16 @@ public class SettingsFragment extends PreferenceFragment implements
         mScheduleWeekDay.setEntries(getWeekdays());
         mScheduleWeekDay.setSummary(mScheduleWeekDay.getEntry());
         mScheduleWeekDay.setOnPreferenceChangeListener(this);
+
+        mTestModeCategory = findPreference(KEY_CATEGORY_TEST_MODE);
+        mTestModeEnabled = findPreference(KEY_TEST_MODE_ENABLED);
+    
+        if (mConfig.isTestModeSupported()) {
+            mTestModeEnabled.setChecked(mConfig.isTestModeEnabled());
+            mTestModeEnabled.setOnPreferenceChangeListener(this);
+        } else {
+            getPreferenceScreen().removePreference(mTestModeCategory);
+        }
 
         updateEnablement(autoDownload, mSchedulerMode.getEntry().toString());
     }
@@ -205,6 +219,9 @@ public class SettingsFragment extends PreferenceFragment implements
             return true;
         } else if (preference.equals(mABStream)) {
             mConfig.setABStreamCurrent((boolean) newValue);
+            return true;
+        } else if (preference.equals(mTestModeEnabled)) {
+            mConfig.setTestModeEnabled((boolean) newValue);
             return true;
         }
         return false;

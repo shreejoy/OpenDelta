@@ -10,4 +10,5 @@
     <color name="card_bg_color">@color/material_grey_50</color>
     <color name="ic_background">#333333</color>
     <color name="inverted">#212121</color>
+    <color name="test_mode_bg">#FF0000</color> <!-- You can choose any color you prefer -->
 </resources>

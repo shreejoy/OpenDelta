@@ -3,6 +3,7 @@
 
     <string name="app_name">OpenDelta</string>
     <string name="title">System updates</string>
+    <string name="updater_title">PixysOS Updater</string>
     <string name="action_about">About</string>
     <string name="about_content" translatable="false" >
 <![CDATA[
@@ -134,6 +135,10 @@
     <string name="clear_files_title">Clean update files</string>
     <string name="clear_files_summary">Delete existing update files to force downloading full update</string>
     <string name="clean_files_feedback" formatted="false">Deleted %d files. Now press \'Check for updates\'</string>
+    <string name="category_test_mode">Test mode</string>
+    <string name="test_mode_title">Test mode</string>
+    <string name="test_mode_summary">Recieve beta updates</string>
+    <string name="test_mode_ribbon_text">TEST MODE</string>
     <string name="state_error_permissions">No storage permissions</string>
     <string name="state_error_flash">Failed to setup flash. Clean /cache and try again.</string>
     <string name="progress_status_0">Idle &#8230;</string>

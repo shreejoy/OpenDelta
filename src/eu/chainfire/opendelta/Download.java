@@ -234,8 +234,8 @@ public class Download {
                     if (digest == null) return false;
                     sumStr = digestToHexString(digest);
                 }
-                boolean sumCheck = sumStr.equals(mMatchSUM);
-                Logger.d("sumStr=" + sumStr + " matchSUM=" + mMatchSUM);
+                boolean sumCheck = sumStr.trim().equals(mMatchSUM.trim());
+                Logger.d("sumStr=" + sumStr + " matchSUM=" + mMatchSUM + " sumCheck=" + String.valueOf(sumCheck));
                 if (!sumCheck) {
                     mIsRunning = false;
                     Logger.i("SUM check failed for " + mURL);
