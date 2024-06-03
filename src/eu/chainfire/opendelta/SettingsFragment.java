@@ -54,6 +54,7 @@ public class SettingsFragment extends PreferenceFragment implements
     private static final String KEY_CATEGORY_TEST_MODE = "category_test_mode";
     private static final String PREF_FORCE_REFLASH = "force_reflash";
     private static final String PREF_CLEAN_FILES = "clear_files";
+    private static final String PREF_INCREMENTAL_UPDATES = "pref_incremental_updates";
 
     private SwitchPreferenceCompat mNetworksConfig;
     private ListPreference mAutoDownload;
@@ -72,6 +73,7 @@ public class SettingsFragment extends PreferenceFragment implements
     private ListPreference mScheduleWeekDay;
     private PreferenceCategory mTestModeCategory;
     private SwitchPreferenceCompat mTestModeEnabled;
+    private SwitchPreferenceCompat mIncrementalUpdates;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -146,6 +148,11 @@ public class SettingsFragment extends PreferenceFragment implements
         } else {
             getPreferenceScreen().removePreference(mTestModeCategory);
         }
+
+        // Incremental updates
+        mIncrementalUpdates = findPreference(PREF_INCREMENTAL_UPDATES);
+        mIncrementalUpdates.setChecked(mConfig.isIncrementalUpdatesEnabled());
+        mIncrementalUpdates.setOnPreferenceChangeListener(this);
 
         updateEnablement(autoDownload, mSchedulerMode.getEntry().toString());
     }
@@ -222,6 +229,9 @@ public class SettingsFragment extends PreferenceFragment implements
             return true;
         } else if (preference.equals(mTestModeEnabled)) {
             mConfig.setTestModeEnabled((boolean) newValue);
+            return true;
+        } else if (preference.equals(mIncrementalUpdates)) {
+            mConfig.setIncrementalUpdatesEnabled((boolean) newValue);
             return true;
         }
         return false;

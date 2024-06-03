@@ -51,6 +51,7 @@ public class Config {
     private final static String PREF_AB_STREAM_NAME = "ab_stream_flashing";
     private final static String PROP_AB_DEVICE = "ro.build.ab_update";
     private final static String PREF_TEST_MODE_NAME = "test_mode_enabled";
+    private final static String PREF_INCREMENTAL_UPDATES = "pref_incremental_updates";
 
     private final SharedPreferences prefs;
 
@@ -60,6 +61,7 @@ public class Config {
     private final String path_base;
     private final String path_flash_after_update;
     private final boolean support_ab_perf_mode;
+    private final boolean use_incremental_updates;
     private final boolean use_twrp;
     private final boolean property_test_mode;
     private final String filename_base_prefix;
@@ -67,6 +69,8 @@ public class Config {
     private final String url_base_json;
     private final String pixys_version;
     private final String test_url_base_json;
+    private final String full_update_base;
+    private final String incremental_update_base;
     private final String property_ziptype;
 
     private Config(Context context) {
@@ -93,6 +97,7 @@ public class Config {
         path_flash_after_update = String.format(Locale.ENGLISH, "%s%s%s",
                 path_base, "FlashAfterUpdate", File.separator);
         support_ab_perf_mode = res.getBoolean(R.bool.support_ab_perf_mode);
+        use_incremental_updates = res.getBoolean(R.bool.use_incremental_updates);
         use_twrp = res.getBoolean(R.bool.use_twrp);
         url_branch_name = res.getString(R.string.url_branch_name);
         filename_base_prefix = String.format(Locale.ENGLISH,
@@ -100,10 +105,14 @@ public class Config {
         property_ziptype = SystemProperties.get(res.getString(R.string.property_ziptype));
         url_base_json = String.format(
                 res.getString(R.string.url_base_json),
-                url_branch_name, property_device, property_ziptype.toLowerCase(Locale.ENGLISH));
+                url_branch_name, property_device);
         test_url_base_json = String.format(
                 res.getString(R.string.test_url_base_json),
-                url_branch_name, property_device, property_ziptype.toLowerCase(Locale.ENGLISH));
+                url_branch_name, property_device);
+        full_update_base = String.format(
+                res.getString(R.string.full_update_base), property_ziptype.toLowerCase(Locale.ENGLISH));
+        incremental_update_base = String.format(
+                res.getString(R.string.incremental_update_base), property_ziptype.toLowerCase(Locale.ENGLISH));
         property_test_mode = !SystemProperties.get(
                 res.getString(R.string.property_test_mode)).isEmpty();
 
@@ -118,6 +127,7 @@ public class Config {
         Logger.d("use_twrp: %d", use_twrp ? 1 : 0);
         Logger.d("property_ziptype: %s", property_ziptype);
         Logger.d("property_test_mode: %d", property_test_mode ? 1 : 0);
+        Logger.d("use_incremental_update: %d", use_incremental_updates ? 1 : 0);
     }
 
     public String getFilenameBase() {
@@ -224,6 +234,14 @@ public class Config {
         return test_url_base_json;
     }
 
+    public String getFullUpdateBase() {
+        return full_update_base;
+    }
+
+    public String getIncrementalUpdateBase() {
+        return incremental_update_base;
+    }
+
     public static boolean isABDevice() {
         return SystemProperties.getBoolean(PROP_AB_DEVICE, false);
     }
@@ -242,5 +260,13 @@ public class Config {
 
     public void setTestModeEnabled(boolean enable) {
         prefs.edit().putBoolean(PREF_TEST_MODE_NAME, enable).apply();
+    }
+
+    public boolean isIncrementalUpdatesEnabled() {
+        return prefs.getBoolean(PREF_INCREMENTAL_UPDATES, false);
+    }
+
+    public void setIncrementalUpdatesEnabled(boolean enable) {
+        prefs.edit().putBoolean(PREF_INCREMENTAL_UPDATES, enable).apply();
     }
 }

@@ -1317,9 +1317,15 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                 String url = mConfig.isTestModeEnabled()
                         ? mConfig.getTestUrlBaseJson()
                         : mConfig.getUrlBaseJson();
+
+                url += (mConfig.isIncrementalUpdatesEnabled()
+                        ? mConfig.getIncrementalUpdateBase()
+                        : mConfig.getFullUpdateBase());
+
                 String latestBuild = null;
                 String urlOverride = null;
                 String sumOverride = null;
+                String expectedFilename = null;
                 List<String> payloadProps = null;
 
                 String buildData = Download.asString(url);
@@ -1340,6 +1346,9 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                             String fileName = new File(build.getString("filename")).getName();
                             urlOverride = build.getString("url");
                             sumOverride = build.getString("md5");
+                            if (build.has("expected_filename")) {
+                                expectedFilename = build.getString("expected_filename");
+                            }
                             if (build.has("payload")) {
                                 payloadProps = new ArrayList<>();
                                 JSONArray payloadList = build.getJSONArray("payload");
@@ -1372,13 +1381,25 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                     }
                 } catch (Exception e) {
                     Logger.ex(e);
-                    mState.update(State.ERROR_UNOFFICIAL, mConfig.getVersion());
+                    if(mConfig.isIncrementalUpdatesEnabled()) {
+                        mConfig.setIncrementalUpdatesEnabled(false);                        
+                    }
+
+                    mState.update(State.ERROR_INCREMENTAL_UNAVAILABLE);
                     return;
                 }
 
                 // if we don't even find a build on dl no sense to continue
                 if (latestBuild == null || latestBuild.length() == 0) {
-                    Logger.d("no latest build found at " + mConfig.getUrlBaseJson() +
+                    Logger.d("no latest build found at " +
+                            (mConfig.isTestModeEnabled()
+                                    ? mConfig.getTestUrlBaseJson()
+                                    : mConfig.getUrlBaseJson())
+                            +
+                            (mConfig.isIncrementalUpdatesEnabled()
+                                    ? mConfig.getIncrementalUpdateBase()
+                                    : mConfig.getFullUpdateBase())
+                            +
                             " for " + mConfig.getDevice());
                     return;
                 }
@@ -1390,28 +1411,36 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                 String currentVersionZip = mConfig.getFilenameBase() + ".zip";
                 boolean updateAvailable = latestBuild != null && forceFlash;
                 if (latestBuild != null && !forceFlash) {
-                    try {
-                        final long currFileDate = Long.parseLong(currentVersionZip
-                                .split("-")[5]);
-                        final long latestFileDate = Long.parseLong(latestBuild
-                                .split("-")[5]);
-                        
-                        final long curFileTime = Long.parseLong(currentVersionZip
-                                .split("-")[6]);
-                        final long latestFileTime = Long.parseLong(latestBuild
-                                .split("-")[6]);
-
-                        updateAvailable = latestFileDate > currFileDate;
-                        // If dates are the same, check the time
-                        if (latestFileDate == currFileDate) {
-                            updateAvailable = latestFileTime > curFileTime;
+                    if(mConfig.isIncrementalUpdatesEnabled()) {
+                        Logger.d("Incremental updates enabled");
+                        updateAvailable = currentVersionZip.equals(expectedFilename);
+                        if(!updateAvailable) {
+                            Logger.d("Current version zip does not match expected filename. Fall back to full update");
                         }
+                    } else{
+                        try {
+                            final long currFileDate = Long.parseLong(currentVersionZip
+                                    .split("-")[5]);
+                            final long latestFileDate = Long.parseLong(latestBuild
+                                    .split("-")[5]);
+                            
+                            final long curFileTime = Long.parseLong(currentVersionZip
+                                    .split("-")[6]);
+                            final long latestFileTime = Long.parseLong(latestBuild
+                                    .split("-")[6]);
 
-                    } catch (NumberFormatException exception) {
-                        // Just incase someone decides to 
-                        // make up his own zip / build name and F's this up
-                        Logger.d("Build name malformed");
-                        Logger.ex(exception);
+                            updateAvailable = latestFileDate > currFileDate;
+                            // If dates are the same, check the time
+                            if (latestFileDate == currFileDate) {
+                                updateAvailable = latestFileTime > curFileTime;
+                            }
+
+                        } catch (NumberFormatException exception) {
+                            // Just incase someone decides to 
+                            // make up his own zip / build name and F's this up
+                            Logger.d("Build name malformed");
+                            Logger.ex(exception);
+                        }
                     }
                 }
                 mPrefs.edit().putString(PREF_LATEST_FULL_NAME,
@@ -1645,10 +1674,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
         final String jsURL = mConfig.isTestModeEnabled()
                 ? mConfig.getTestUrlBaseJson()
                 : mConfig.getUrlBaseJson();
-        StringBuilder changelog = new StringBuilder(
-                Download.asString(jsURL.replace(
-                "full_update_" + mConfig.getZipType().toLowerCase() + ".json",
-                "changelog.txt")));
+        StringBuilder changelog = new StringBuilder(Download.asString(jsURL + "changelog.txt"));
         return changelog.toString();
     }
 }

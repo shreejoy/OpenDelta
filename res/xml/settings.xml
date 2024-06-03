@@ -21,6 +21,13 @@
 		android:key="category_flashing"
 		android:title="@string/category_flashing" >
 		<SwitchPreferenceCompat
+			android:defaultValue="false"
+			android:key="pref_incremental_updates"
+			android:title="@string/pref_incremental_updates_title"
+			android:summary="@string/pref_incremental_updates_summary"
+			android:summaryOn="@string/pref_incremental_updates_summary_on"
+			android:summaryOff="@string/pref_incremental_updates_summary_off" />
+		<SwitchPreferenceCompat
 			android:defaultValue="true"
 			android:key="ab_perf_mode"
 			android:persistent="false"

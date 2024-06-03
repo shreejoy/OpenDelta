@@ -146,20 +146,58 @@
             android:layout_width="match_parent"
             android:layout_height="10dp" />
         
-        <!-- For ziptype -->
-        <TextView
-            android:id="@+id/text_ziptype_header"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/text_ziptype_header_title"
-            android:textAppearance="@style/HeaderText" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/text_ziptype"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/ValueText" />
+            <!-- For ziptype -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/text_ziptype_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_ziptype_header_title"
+                    android:textAppearance="@style/HeaderText" />
+
+                <TextView
+                    android:id="@+id/text_ziptype"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/ValueText" />
+            </LinearLayout>
+
+            <!-- For update type -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_updatetype_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_updatetype_header_title"
+                    android:textAppearance="@style/HeaderText" />
+
+                <TextView
+                    android:id="@+id/text_updatetype"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/ValueText" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+            
         <TextView
             android:id="@+id/text_update_version_header"
             android:layout_width="wrap_content"

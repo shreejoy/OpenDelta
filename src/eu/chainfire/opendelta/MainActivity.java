@@ -155,6 +155,7 @@ public class MainActivity extends Activity {
     private Button mRebootBtn;
     private TextView mCurrentVersion;
     private TextView mZiptype;
+    private TextView mUpdateType;
     private TextView mLastChecked;
     private TextView mDownloadSizeHeader;
     private TextView mDownloadSize;
@@ -165,12 +166,16 @@ public class MainActivity extends Activity {
     private TextView mSub2;
     private Button mFileFlashButton;
     private SharedPreferences mPrefs;
+    private SharedPreferences.OnSharedPreferenceChangeListener mPreferenceChangeListener;
     private TextView mUpdateVersionTitle;
     private TextView mExtraText;
     private TextView mProgressPercent;
     private int mProgressCurrent = 0;
     private int mProgressMax = 1;
     private boolean mPermOk;
+
+    // Incremental updates
+    private final static String PREF_INCREMENTAL_UPDATES = "pref_incremental_updates";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,6 +196,16 @@ public class MainActivity extends Activity {
         mHandler = new Handler(getMainLooper());
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+        mPreferenceChangeListener = (sharedPreferences, key) -> {
+            if (key.equals(PREF_INCREMENTAL_UPDATES)) {
+                updateUpdateTypeText();
+            }
+        };
+    
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(mPreferenceChangeListener);
+    
+
         mTitle = findViewById(R.id.text_title);
         mSub = findViewById(R.id.progress_text);
         mSub2 = findViewById(R.id.progress_text2);
@@ -204,6 +219,7 @@ public class MainActivity extends Activity {
         mPauseBtn = findViewById(R.id.button_pause);
         mCurrentVersion = findViewById(R.id.text_current_version);
         mZiptype = findViewById(R.id.text_ziptype);
+        mUpdateType = findViewById(R.id.text_updatetype);
         mLastChecked = findViewById(R.id.text_last_checked);
         mDownloadSize = findViewById(R.id.text_download_size);
         mDownloadSizeHeader = findViewById(R.id.text_download_size_header);
@@ -279,7 +295,7 @@ public class MainActivity extends Activity {
     // Show Rom Specific Changelog and Device Specific Changelog
     private void showChangelog() {
         String changelogUrl = (mConfig.isTestModeEnabled() ? mConfig.getTestUrlBaseJson() : mConfig.getUrlBaseJson())
-                .replace("full_update_" + mConfig.getZipType().toLowerCase() + ".json", "changelog.txt");
+                + "changelog.txt";
 
         new AsyncTask<String, Void, String>() {
             @Override
@@ -525,9 +541,18 @@ public class MainActivity extends Activity {
                 mPauseBtn.setVisibility(vis);
                 mPauseBtn.setText(getString(enableResume ? R.string.button_resume_text
                         : R.string.button_pause_text));
+
+                // update the update type text
+                updateUpdateTypeText();
             });
         }
     };
+
+    private void updateUpdateTypeText() {
+        mUpdateType.setText(mConfig.isIncrementalUpdatesEnabled()
+                ? getString(R.string.text_update_type_incremental)
+                : getString(R.string.text_update_type_full));
+    }
 
     private String getTitleForState(@StateInt int state, String stateStr, boolean hintShown) {
         switch (state) {
@@ -830,6 +855,8 @@ public class MainActivity extends Activity {
     public void onDestroy() {
         unbindService(mConnection);
         super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .unregisterOnSharedPreferenceChangeListener(mPreferenceChangeListener);
     }
 
     private boolean isExternalStorageDocument(Uri uri) {

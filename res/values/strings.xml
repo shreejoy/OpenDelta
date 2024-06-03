@@ -32,6 +32,7 @@
     <string name="state_error_disk_space">Not enough disk space</string>
     <string name="state_error_unknown">Unknown error</string>
     <string name="state_error_unofficial">OTA Updates disabled</string>
+    <string name="state_error_incremental_unavailable">Incremental updates unavailable\nFallen Back to Full update\nTry Again</string>
     <string name="error_disk_space_sub" formatted="false">%d MiB available, %d MiB required</string>
     <string name="notify_update_available">An update is available</string>
     <string name="notify_checking">Checking for update &#8230;</string>
@@ -84,6 +85,9 @@
     <string name="state_error_download_extra_resume">resume-able</string>
     <string name="text_current_version_header_title">Current version:</string>
     <string name="text_ziptype_header_title">Build type:</string>
+    <string name="text_updatetype_header_title">Update type:</string>
+    <string name="text_update_type_incremental">Incremental Update</string>
+    <string name="text_update_type_full">Full Update</string>
     <string name="text_last_checked_header_title">Last checked:</string>
     <string name="text_update_version_title">Update version:</string>
     <string name="text_download_size_header_title">Download size:</string>
@@ -158,7 +162,10 @@
     <string name="ab_wake_lock_summary">Keep the CPU awake when installing an update. Makes updating fast even if the screen is off</string>
     <string name="ab_stream_flashing_title">AB stream flashing</string>
     <string name="ab_stream_flashing_summary">Download and flash at the same time\nDisable on unreliable connection</string>
-    <string name="state_error_flash_file_title">Couldn\'t flash that file</string>
+    <string name="pref_incremental_updates_title">Incremental Updates</string>
+    <string name="pref_incremental_updates_summary">Enable incremental updates</string>
+    <string name="pref_incremental_updates_summary_on">Incremental updates are enabled. Availability depends on maintainer support and device compatibility. Update size will be significantly smaller.</string>
+    <string name="pref_incremental_updates_summary_off">Incremental updates are disabled. Full updates will be downloaded.</string>    <string name="state_error_flash_file_title">Couldn\'t flash that file</string>
     <string name="select_file_activity_title">Select ZIP file</string>
     <string name="button_select_file">File</string>
     <string name="state_error_ab_flash">Couldn\'t flash AB update</string>
