@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -46,6 +47,8 @@ public class Download {
     private static final int HTTP_READ_TIMEOUT = 30000;
     private static final int HTTP_CONNECTION_TIMEOUT = 30000;
     private static final String DIGEST_ALGO = "MD5";
+    private static final int MAX_REDIRECTS = 5; // Maximum number of redirects to follow
+    private static final String USER_AGENT = "com.pixysos.updater";
 
     public static final int STATUS_DOWNLOAD_STOP = 0;
     public static final int STATUS_DOWNLOAD_PAUSE = 1;
@@ -294,6 +297,15 @@ public class Download {
     }
 
     private static HttpsURLConnection setupHttpsRequest(String urlStr, long offset) {
+        return setupHttpsRequest(urlStr, offset, MAX_REDIRECTS);
+    }
+
+    private static HttpsURLConnection setupHttpsRequest(String urlStr, long offset, int redirectsLeft) {
+        if (redirectsLeft == 0) {
+            Logger.d("Too many redirects");
+            return null;
+        }
+
         URL url;
         HttpsURLConnection urlConnection;
         try {
@@ -303,10 +315,20 @@ public class Download {
             urlConnection.setReadTimeout(HTTP_READ_TIMEOUT);
             urlConnection.setRequestMethod("GET");
             urlConnection.setDoInput(true);
-            if (offset > 0)
+            urlConnection.setRequestProperty("User-Agent", USER_AGENT);
+            if (offset > 0) {
                 urlConnection.setRequestProperty("Range", "bytes=" + offset + "-");
+            }
             urlConnection.connect();
             int code = urlConnection.getResponseCode();
+
+            // Handle redirects
+            if (code == HttpURLConnection.HTTP_MOVED_PERM || code == HttpURLConnection.HTTP_MOVED_TEMP || code == HttpURLConnection.HTTP_SEE_OTHER) {
+                String newUrl = urlConnection.getHeaderField("Location");
+                urlConnection.disconnect();
+                return setupHttpsRequest(newUrl, offset, redirectsLeft - 1);
+            }
+
             if (offset > 0 && code != HttpsURLConnection.HTTP_PARTIAL) {
                 Logger.d("response: %d expected: %d", code,
                         HttpsURLConnection.HTTP_PARTIAL);

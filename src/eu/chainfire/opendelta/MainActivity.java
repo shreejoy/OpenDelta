@@ -295,7 +295,7 @@ public class MainActivity extends Activity {
     // Show Rom Specific Changelog and Device Specific Changelog
     private void showChangelog() {
         String changelogUrl = (mConfig.isTestModeEnabled() ? mConfig.getTestUrlBaseJson() : mConfig.getUrlBaseJson())
-                + "changelog.txt";
+                + mConfig.getChangelogsBase();
 
         new AsyncTask<String, Void, String>() {
             @Override

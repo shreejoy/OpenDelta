@@ -1334,51 +1334,45 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
                     mState.update(State.ERROR_DOWNLOAD, url, Download.ERROR_CODE_NEWEST_BUILD);
                     mNotificationManager.cancel(NOTIFICATION_BUSY);
                 }
-                JSONObject object;
+
                 try {
-                    object = new JSONObject(buildData);
-                    JSONArray updatesList = object.getJSONArray("response");
-                    for (int i = 0; i < updatesList.length(); i++) {
-                        if (updatesList.isNull(i)) {
-                            continue;
+
+                    try {
+                        JSONObject object = new JSONObject(buildData);
+                        String fileName = new File(object.getString("filename")).getName();
+                        urlOverride = object.getString("url");
+                        sumOverride = object.getString("md5");
+                        if (object.has("expected_filename")) {
+                            expectedFilename = object.getString("expected_filename");
                         }
-                        try {
-                            JSONObject build = updatesList.getJSONObject(i);
-                            String fileName = new File(build.getString("filename")).getName();
-                            urlOverride = build.getString("url");
-                            sumOverride = build.getString("md5");
-                            if (build.has("expected_filename")) {
-                                expectedFilename = build.getString("expected_filename");
-                            }
-                            if (build.has("payload")) {
-                                payloadProps = new ArrayList<>();
-                                JSONArray payloadList = build.getJSONArray("payload");
-                                for (int j = 0; j < payloadList.length(); j++) {
-                                    if (payloadList.isNull(j)) continue;
-                                    JSONObject prop = payloadList.getJSONObject(j);
-                                    Iterator<String> keys = prop.keys();
-                                    while (keys.hasNext()) {
-                                        final String key = keys.next();
-                                        payloadProps.add(key + "=" + prop.get(key));
-                                    }
+                        if (object.has("payload")) {
+                            payloadProps = new ArrayList<>();
+                            JSONArray payloadList = object.getJSONArray("payload");
+                            for (int j = 0; j < payloadList.length(); j++) {
+                                if (payloadList.isNull(j)) continue;
+                                JSONObject prop = payloadList.getJSONObject(j);
+                                Iterator<String> keys = prop.keys();
+                                while (keys.hasNext()) {
+                                    final String key = keys.next();
+                                    payloadProps.add(key + "=" + prop.get(key));
                                 }
                             }
-                            Logger.d("parsed from json:");
-                            Logger.d("fileName= " + fileName);
-                                latestBuild = fileName;
-                            if (urlOverride != null && !urlOverride.equals(""))
-                                Logger.d("url= " + urlOverride);
-                            if (sumOverride != null && !sumOverride.equals("")) {
-                                Logger.d("md5 = " + sumOverride);
-                            }
-                            if (payloadProps != null) {
-                                for (String str : payloadProps) {
-                                    Logger.d(str);
-                                }
-                            }
-                        } catch (JSONException e) {
-                            Logger.ex(e);
                         }
+                        Logger.d("parsed from json:");
+                        Logger.d("fileName= " + fileName);
+                        latestBuild = fileName;
+                        if (urlOverride != null && !urlOverride.equals(""))
+                            Logger.d("url= " + urlOverride);
+                        if (sumOverride != null && !sumOverride.equals("")) {
+                            Logger.d("md5 = " + sumOverride);
+                        }
+                        if (payloadProps != null) {
+                            for (String str : payloadProps) {
+                                Logger.d(str);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        Logger.ex(e);
                     }
                 } catch (Exception e) {
                     Logger.ex(e);
@@ -1675,7 +1669,7 @@ public class UpdateService extends Service implements OnSharedPreferenceChangeLi
         final String jsURL = mConfig.isTestModeEnabled()
                 ? mConfig.getTestUrlBaseJson()
                 : mConfig.getUrlBaseJson();
-        StringBuilder changelog = new StringBuilder(Download.asString(jsURL + "changelog.txt"));
+        StringBuilder changelog = new StringBuilder(Download.asString(jsURL + mConfig.getChangelogsBase()));
         return changelog.toString();
     }
 }

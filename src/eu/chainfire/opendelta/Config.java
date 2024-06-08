@@ -57,6 +57,7 @@ public class Config {
 
     private final String property_version;
     private final String property_device;
+    private final String property_release;
     private final String filename_base;
     private final String path_base;
     private final String path_flash_after_update;
@@ -65,12 +66,12 @@ public class Config {
     private final boolean use_twrp;
     private final boolean property_test_mode;
     private final String filename_base_prefix;
-    private final String url_branch_name;
     private final String url_base_json;
     private final String pixys_version;
     private final String test_url_base_json;
     private final String full_update_base;
     private final String incremental_update_base;
+    private final String changelogs_base;
     private final String property_ziptype;
 
     private Config(Context context) {
@@ -87,6 +88,9 @@ public class Config {
         property_device = SystemProperties.get(
                 res.getString(R.string.property_device));
 
+        property_release = SystemProperties.get(
+                res.getString(R.string.property_release));
+
         filename_base = String.format(Locale.ENGLISH,
                 res.getString(R.string.filename_base), pixys_version);
 
@@ -99,20 +103,18 @@ public class Config {
         support_ab_perf_mode = res.getBoolean(R.bool.support_ab_perf_mode);
         use_incremental_updates = res.getBoolean(R.bool.use_incremental_updates);
         use_twrp = res.getBoolean(R.bool.use_twrp);
-        url_branch_name = res.getString(R.string.url_branch_name);
         filename_base_prefix = String.format(Locale.ENGLISH,
                 res.getString(R.string.filename_base), property_version);
         property_ziptype = SystemProperties.get(res.getString(R.string.property_ziptype));
         url_base_json = String.format(
                 res.getString(R.string.url_base_json),
-                url_branch_name, property_device);
+                property_device, property_release, property_ziptype.toLowerCase(Locale.ENGLISH));
         test_url_base_json = String.format(
                 res.getString(R.string.test_url_base_json),
-                url_branch_name, property_device);
-        full_update_base = String.format(
-                res.getString(R.string.full_update_base), property_ziptype.toLowerCase(Locale.ENGLISH));
-        incremental_update_base = String.format(
-                res.getString(R.string.incremental_update_base), property_ziptype.toLowerCase(Locale.ENGLISH));
+                property_device, property_release, property_ziptype.toLowerCase(Locale.ENGLISH));
+        full_update_base = res.getString(R.string.full_update_base);
+        incremental_update_base = res.getString(R.string.incremental_update_base);
+        changelogs_base = res.getString(R.string.changelogs_base);
         property_test_mode = !SystemProperties.get(
                 res.getString(R.string.property_test_mode)).isEmpty();
 
@@ -122,8 +124,9 @@ public class Config {
         Logger.d("filename_base_prefix: %s", filename_base_prefix);
         Logger.d("path_base: %s", path_base);
         Logger.d("path_flash_after_update: %s", path_flash_after_update);
-        Logger.d("url_branch_name: %s", url_branch_name);
+        Logger.d("property_release: %s", property_release);
         Logger.d("url_base_json: %s", url_base_json);
+        Logger.d("changelogs_base: %s", changelogs_base);
         Logger.d("use_twrp: %d", use_twrp ? 1 : 0);
         Logger.d("property_ziptype: %s", property_ziptype);
         Logger.d("property_test_mode: %d", property_test_mode ? 1 : 0);
@@ -144,6 +147,14 @@ public class Config {
 
     public boolean getUseTWRP() {
         return use_twrp;
+    }
+
+    public String getPropertyRelease() {
+        return property_release;
+    }
+
+    public String getChangelogsBase() {
+        return changelogs_base;
     }
 
     public boolean getInfoDisplayed() {
@@ -220,10 +231,6 @@ public class Config {
 
     public String getFileBaseNamePrefix() {
         return filename_base_prefix;
-    }
-
-    public String getUrlBranchName() {
-        return url_branch_name;
     }
 
     public String getUrlBaseJson() {

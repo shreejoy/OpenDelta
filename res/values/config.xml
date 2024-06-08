@@ -7,6 +7,9 @@
 	<!-- Property to read for ROM version -->
 	<string name="property_version">ro.pixys.display.version</string>
 
+	<!--- Property to read for ROM release -->
+	<string name="property_release">ro.system.build.version.release</string>
+
 	<!-- Property to read for device identifier -->
 	<string name="property_device">ro.pixys.device</string>
 
@@ -16,20 +19,20 @@
 	<!-- Path deltas are stored, relative to sdcard root -->
 	<string name="path_base">OpenDelta</string>
 
-	<!-- the branch name to format URLs with -->
-	<string name="url_branch_name">fourteen</string>
-
 	<!-- URL base to fetch all builds. first %s is replaced by branch name later on by property_device -->
-	<string name="url_base_json" formatted="false">https://raw.githubusercontent.com/Gabeldorsche/ota/%s/%s/</string>
+	<string name="url_base_json" formatted="false">https://api.pixysos.com/ota/v2/%s/%s/%s</string>
 
 	<!--  URL base to fetch test builds. first %s is replaced by branch name later on by property_device -->
-	<string name="test_url_base_json" formatted="false">https://raw.githubusercontent.com/Gabeldorsche/ota/%s/%s/</string>
+	<string name="test_url_base_json" formatted="false">https://api.pixysos.com/ota-test/v2/%s/%s/%s/</string>
 
 	<!-- full update -->
-	<string name="full_update_base">%s.json</string>
+	<string name="full_update_base">full</string>
 
 	<!-- incremental update -->
-	<string name="incremental_update_base">incremental_%s.json</string>
+	<string name="incremental_update_base">incremental</string>
+
+	<!-- changelogs update -->
+	<string name="changelogs_base">changelogs</string>
 
 	<!-- Whether device supports A/B performance flashing -->
 	<item name="support_ab_perf_mode" type="bool">false</item>
